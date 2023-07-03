@@ -9,8 +9,8 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.evandrorenan.web3270datasysdump.domain.usecase.impl.BaseLocatorField.ADDRESS;
-import static com.evandrorenan.web3270datasysdump.domain.usecase.impl.BaseLocatorField.HEX_CONTENT;
+import static com.evandrorenan.web3270datasysdump.domain.model.BaseLocatorField.ADDRESS;
+import static com.evandrorenan.web3270datasysdump.domain.model.BaseLocatorField.HEX_CONTENT;
 
 public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocatorFromSysdumpUseCase {
 
