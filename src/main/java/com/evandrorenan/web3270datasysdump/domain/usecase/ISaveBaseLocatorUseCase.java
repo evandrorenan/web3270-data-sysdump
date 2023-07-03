@@ -1,6 +1,12 @@
 package com.evandrorenan.web3270datasysdump.domain.usecase;
 
+import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
+
+import java.util.List;
+
 public interface ISaveBaseLocatorUseCase {
 
-    void run(IRepo)
+    List<BaseLocator> run(List<BaseLocator> baseLocator);
+
+    List<BaseLocator> run(String rawInput) throws Exception;
 }
