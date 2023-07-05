@@ -1,11 +1,13 @@
 package com.evandrorenan.web3270datasysdump.domain.model;
 
 import lombok.Builder;
-import org.springframework.stereotype.Component;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Component
 @Builder
+@Document(collection = "sysdumps")
 public record BaseLocator(
+    ObjectId _id,
     String address,
     String hexContent
 ) {}
