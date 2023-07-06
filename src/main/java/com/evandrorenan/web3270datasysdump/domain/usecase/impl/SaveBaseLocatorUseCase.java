@@ -1,4 +1,4 @@
-gpackage com.evandrorenan.web3270datasysdump.domain.usecase.impl;
+package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
 import com.evandrorenan.web3270datasysdump.domain.usecase.IExtractBaseLocatorFromSysdumpUseCase;
