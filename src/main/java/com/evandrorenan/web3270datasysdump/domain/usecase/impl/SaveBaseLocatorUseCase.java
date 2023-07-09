@@ -29,7 +29,7 @@ public class SaveBaseLocatorUseCase implements ISaveBaseLocatorUseCase {
     }
 
     @Override
-    public List<BaseLocator> run(String rawInput) throws Exception {
+    public List<BaseLocator> run(String rawInput) {
         var baseLocators= this.extractUseCase.run(rawInput);
         return repo.saveAll(baseLocators.values());
     }

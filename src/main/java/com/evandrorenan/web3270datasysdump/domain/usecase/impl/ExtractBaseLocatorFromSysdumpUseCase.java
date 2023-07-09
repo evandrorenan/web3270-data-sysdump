@@ -18,20 +18,23 @@ public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocator
 
     public static final Pattern REGEX_PATTERN_VALID_BASE_LOCATOR =
             Pattern.compile("^[0-9A-F]{8}.+?[0-9A-F]{8}\\s[0-9A-F]{8}\\s[0-9A-F]{8}\\s[0-9A-F]{8}");
+    public static final String EMPTY_STRING = "";
+    public static final String BLANK = " ";
 
     @Override
     public TreeMap<String, BaseLocator> run(String rawInput) {
-        return convertToTreeMap(rawInput);
+        return convertIntoTreeMap(rawInput);
     }
 
-    private TreeMap<String, BaseLocator> convertToTreeMap(String rawInput) {
+    private TreeMap<String, BaseLocator> convertIntoTreeMap(String rawInput) {
         List<String> inputArray = List.of(rawInput.split("\n"));
 
-        return inputArray.stream()
-                         .filter(this::containsValidBaseLocator)
-                         .map(this::buildBaseLocator)
-                         .collect(Collectors
-                                 .toMap(BaseLocator::address, Function.identity(), this::mergeFunction, TreeMap::new));
+        return inputArray
+                .stream()
+                .filter(this::containsValidBaseLocator)
+                .map(this::buildBaseLocator)
+                .collect(Collectors
+                        .toMap(BaseLocator::address, Function.identity(), this::mergeFunction, TreeMap::new));
     }
 
     private boolean containsValidBaseLocator(String s) {
@@ -45,7 +48,9 @@ public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocator
     private BaseLocator buildBaseLocator(String rawInput) {
         rawInput = rawInput.trim();
         String address = rawInput.substring(ADDRESS.getBeginIndex(), ADDRESS.getEndIndex());
-        String workAreaHex = rawInput.substring(HEX_CONTENT.getBeginIndex(), HEX_CONTENT.getEndIndex());
+        String workAreaHex = rawInput
+                .substring(HEX_CONTENT.getBeginIndex(), HEX_CONTENT.getEndIndex())
+                .replace(BLANK, EMPTY_STRING);
 
         return BaseLocator.builder()
                           .address(address)
