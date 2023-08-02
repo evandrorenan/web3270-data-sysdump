@@ -2,6 +2,7 @@ package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
 import com.evandrorenan.web3270datasysdump.domain.usecase.IExtractBaseLocatorFromSysdumpUseCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import static com.evandrorenan.web3270datasysdump.domain.model.BaseLocatorField.ADDRESS;
 import static com.evandrorenan.web3270datasysdump.domain.model.BaseLocatorField.HEX_CONTENT;
 
+@Slf4j
 @Component
 public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocatorFromSysdumpUseCase {
 
@@ -21,17 +23,22 @@ public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocator
 
     @Override
     public TreeMap<String, BaseLocator> run(String rawInput) {
+        log.info("Starting to run ExtractBaseLocatorFromSysdumpUseCase");
         return convertToTreeMap(rawInput);
     }
 
     private TreeMap<String, BaseLocator> convertToTreeMap(String rawInput) {
         List<String> inputArray = List.of(rawInput.split("\n"));
 
-        return inputArray.stream()
+        var inputArrayStream = inputArray.stream()
                          .filter(this::containsValidBaseLocator)
                          .map(this::buildBaseLocator)
                          .collect(Collectors
                                  .toMap(BaseLocator::address, Function.identity(), this::mergeFunction, TreeMap::new));
+
+        log.info("Lines discarded: {}", inputArray.size() - inputArrayStream.size());
+
+        return inputArrayStream;
     }
 
     private boolean containsValidBaseLocator(String s) {
