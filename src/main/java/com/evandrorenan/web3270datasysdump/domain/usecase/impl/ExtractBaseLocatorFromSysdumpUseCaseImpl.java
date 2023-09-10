@@ -1,7 +1,7 @@
 package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
-import com.evandrorenan.web3270datasysdump.domain.usecase.IExtractBaseLocatorFromSysdumpUseCase;
+import com.evandrorenan.web3270datasysdump.domain.usecase.ExtractBaseLocatorFromSysdumpUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import static com.evandrorenan.web3270datasysdump.domain.model.BaseLocatorField.
 
 @Slf4j
 @Component
-public class ExtractBaseLocatorFromSysdumpUseCase implements IExtractBaseLocatorFromSysdumpUseCase {
+public class ExtractBaseLocatorFromSysdumpUseCaseImpl implements ExtractBaseLocatorFromSysdumpUseCase {
 
     public static final Pattern REGEX_PATTERN_VALID_BASE_LOCATOR =
             Pattern.compile("^[0-9A-F]{8}.+?[0-9A-F]{8}\\s[0-9A-F]{8}\\s[0-9A-F]{8}\\s[0-9A-F]{8}");

@@ -1,9 +1,9 @@
 package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
-import com.evandrorenan.web3270datasysdump.domain.usecase.IExtractBaseLocatorFromSysdumpUseCase;
-import com.evandrorenan.web3270datasysdump.domain.usecase.ISaveBaseLocatorUseCase;
-import com.evandrorenan.web3270datasysdump.repository.ISysDumpRepository;
+import com.evandrorenan.web3270datasysdump.domain.usecase.ExtractBaseLocatorFromSysdumpUseCase;
+import com.evandrorenan.web3270datasysdump.domain.usecase.SaveBaseLocatorUseCase;
+import com.evandrorenan.web3270datasysdump.repository.SysDumpRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,15 +12,15 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SaveBaseLocatorUseCase implements ISaveBaseLocatorUseCase {
+public class SaveBaseLocatorUseCaseImpl implements SaveBaseLocatorUseCase {
 
-    private final ISysDumpRepository repo;
+    private final SysDumpRepository repo;
 
-    private final IExtractBaseLocatorFromSysdumpUseCase extractUseCase;
+    private final ExtractBaseLocatorFromSysdumpUseCase extractUseCase;
 
     @Autowired
-    public SaveBaseLocatorUseCase(ISysDumpRepository repo,
-                                  IExtractBaseLocatorFromSysdumpUseCase extractUseCase) {
+    public SaveBaseLocatorUseCaseImpl(SysDumpRepository repo,
+                                      ExtractBaseLocatorFromSysdumpUseCase extractUseCase) {
         this.extractUseCase = extractUseCase;
         this.repo = repo;
     }

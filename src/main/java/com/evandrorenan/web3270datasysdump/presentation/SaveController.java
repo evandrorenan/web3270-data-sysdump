@@ -1,7 +1,7 @@
 package com.evandrorenan.web3270datasysdump.presentation;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
-import com.evandrorenan.web3270datasysdump.domain.usecase.ISaveBaseLocatorUseCase;
+import com.evandrorenan.web3270datasysdump.domain.usecase.SaveBaseLocatorUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,10 @@ import java.util.List;
 @Controller
 public class SaveController {
 
-    private ISaveBaseLocatorUseCase saveUseCase;
+    private SaveBaseLocatorUseCase saveUseCase;
 
     @Autowired
-    public SaveController(ISaveBaseLocatorUseCase saveUseCase) {
+    public SaveController(SaveBaseLocatorUseCase saveUseCase) {
         this.saveUseCase = saveUseCase;
     }
 

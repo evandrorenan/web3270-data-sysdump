@@ -4,7 +4,7 @@ import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
 
 import java.util.TreeMap;
 
-public interface IExtractBaseLocatorFromSysdumpUseCase {
+public interface ExtractBaseLocatorFromSysdumpUseCase {
 
     TreeMap<String, BaseLocator> run(String rawInputArray) throws Exception;
 }

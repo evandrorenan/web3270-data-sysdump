@@ -13,11 +13,11 @@ import java.util.TreeMap;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ExtractBaseLocatorFromSysdumpUseCaseTest {
+class ExtractBaseLocatorFromSysdumpUseCaseImplTest {
 
     public static final String VALID_RAW_INPUT_ARRAY = "./ExtractBaseLocatorFromSysdumpUseCase_ValidSysdumpInputArray.txt";
 
-    ExtractBaseLocatorFromSysdumpUseCase useCase = new ExtractBaseLocatorFromSysdumpUseCase();
+    ExtractBaseLocatorFromSysdumpUseCaseImpl useCase = new ExtractBaseLocatorFromSysdumpUseCaseImpl();
 
     @Test
     void whenInputIsValid_extractBaseLocators() throws Exception {
