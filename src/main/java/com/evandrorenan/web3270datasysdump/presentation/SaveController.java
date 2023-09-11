@@ -1,10 +1,10 @@
 package com.evandrorenan.web3270datasysdump.presentation;
 
 import com.evandrorenan.web3270datasysdump.domain.model.BaseLocator;
+import com.evandrorenan.web3270datasysdump.domain.usecase.SaveBaseLocatorFromBlobUseCase;
 import com.evandrorenan.web3270datasysdump.domain.usecase.SaveBaseLocatorUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +17,14 @@ import java.util.List;
 @Controller
 public class SaveController {
 
-    private SaveBaseLocatorUseCase saveUseCase;
+    private final SaveBaseLocatorUseCase saveUseCase;
+
+    private final SaveBaseLocatorFromBlobUseCase saveFromBlobUseCase;
 
     @Autowired
-    public SaveController(SaveBaseLocatorUseCase saveUseCase) {
+    public SaveController(SaveBaseLocatorUseCase saveUseCase, SaveBaseLocatorFromBlobUseCase saveFromBlobUseCase) {
         this.saveUseCase = saveUseCase;
+        this.saveFromBlobUseCase = saveFromBlobUseCase;
     }
 
     @PostMapping("/base-locators/raw-input")
@@ -30,10 +33,10 @@ public class SaveController {
         return ResponseEntity.ok().body(saveUseCase.run(rawInput));
     }
 
-    @PostMapping("/base-locators/from-blob/{blob-id}")
+    @PostMapping("/base-locators/from-blob")
     public ResponseEntity<List<BaseLocator>> saveBaseLocatorFromBlob(@RequestParam("blob-id") String blobId) throws Exception {
-        //FIXME: Implement base-locators extraction from blob file
         log.info("Extract base-locators from blob isn't implemented yet.");
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        saveFromBlobUseCase.run(blobId);
+        return ResponseEntity.ok().build();
     }
 }

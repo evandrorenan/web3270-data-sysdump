@@ -35,7 +35,7 @@ public class SaveBaseLocatorFromBlobUseCaseImpl implements SaveBaseLocatorFromBl
             log.info("Chunck size: {}", holder.getChunckData().length());
             log.info("Leftover data: {}", holder.getLeftOverData());
             saveBaseLocatorUseCase.run(holder.getChunckData());
-            blobRepository.nextChunk(blobIS, holder.getLeftOverData());
+            optBlobChunckHolder = blobRepository.nextChunk(blobIS, holder.getLeftOverData());
         }
     }
 }
