@@ -24,9 +24,9 @@ public class BlobRepositoryImpl implements BlobRepository {
     private final Integer bufferSize;
 
     @Autowired
-    public BlobRepositoryImpl(@Value("${connection-string}") String connectionString,
-                              @Value("${blob-container-name}") String blobContainerName,
-                              @Value("${buffer-size:1920}") Integer bufferSize) {
+    public BlobRepositoryImpl(@Value("${blob-repository.blob-storage.connection-string}") String connectionString,
+                              @Value("${blob-repository.blob-storage.container-name}") String blobContainerName,
+                              @Value("${blob-repository.buffer-size:1920}") Integer bufferSize) {
         this.connectionString = connectionString;
         this.blobContainerName = blobContainerName;
         this.bufferSize = bufferSize;

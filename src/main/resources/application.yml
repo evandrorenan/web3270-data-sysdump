@@ -6,3 +6,9 @@ spring:
       database: ${MONGODB_DBNAME}
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
+
+blob-repository:
+  buffer-size: ${BLOB_REPOSITORY_BUFFER_SIZE}
+  blob-storage:
+    connection-string: ${BLOB_STORAGE_CONNECTION_STRING}
+    container-name: ${BLOB_STORAGE_CONTAINER_NAME}
