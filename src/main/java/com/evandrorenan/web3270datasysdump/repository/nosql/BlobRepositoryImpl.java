@@ -1,9 +1,10 @@
-package com.evandrorenan.web3270datasysdump.repository;
+package com.evandrorenan.web3270datasysdump.repository.nosql;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.evandrorenan.web3270datasysdump.repository.BlobRepository;
 import com.evandrorenan.web3270datasysdump.repository.util.BlobChunckHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
