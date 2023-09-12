@@ -1,4 +1,4 @@
-package com.evandrorenan.web3270datasysdump.domain.usecase;
+package com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor;
 
 public enum ReportLineProcessorType {
 

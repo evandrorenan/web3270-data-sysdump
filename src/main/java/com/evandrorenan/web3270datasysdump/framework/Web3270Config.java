@@ -1,12 +1,14 @@
 package com.evandrorenan.web3270datasysdump.framework;
 
-import com.evandrorenan.web3270datasysdump.domain.usecase.ReportLineProcessor;
+import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ReportLineProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class Web3270Config {
@@ -20,7 +22,9 @@ public class Web3270Config {
 
     @Bean
     public List<ReportLineProcessor> buildLineProcessorsBeans() {
-        return List.copyOf(
-                context.getBeanFactory().getBeansOfType(ReportLineProcessor.class).values());
+        return context.getBeanFactory().getBeansOfType(ReportLineProcessor.class)
+                .values()
+                .stream().sorted(Comparator.comparing(ReportLineProcessor::priority))
+                .collect(Collectors.toList());
     }
 }
