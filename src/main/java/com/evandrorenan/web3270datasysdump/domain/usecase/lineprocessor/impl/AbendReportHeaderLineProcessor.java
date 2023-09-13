@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,7 @@ public class AbendReportHeaderLineProcessor implements ReportLineProcessor {
     private static final Pattern PATTERN = Pattern.compile(
             "JOBNAME:\\s*?(?<" + JOB_NAME + ">[A-Za-z0-9$@#]{1,8}).*?" +
                   "ABEND:\\s*?(?<" + ABEND_CODE + ">[A-Za-z0-9$@#]{1,8}).*?" +
-                  "(?<" + DATE + ">\\d{4}\\/\\d{2}\\/\\d{2})\\s*?" +
+                  "(?<" + DATE + ">\\d{4}/\\d{2}/\\d{2})\\s*?" +
                   "(?<" + TIME + ">\\d{2}:\\d{2}:\\d{2})");
 
     @Override
@@ -31,13 +32,14 @@ public class AbendReportHeaderLineProcessor implements ReportLineProcessor {
     @Override
     public AbendReport process(String line, AbendReport abendReport) {
         Matcher matcher = PATTERN.matcher(line);
-        if (!matcher.matches()) return null;
+        if (abendReport == null || !matcher.matches()) return abendReport;
 
         return AbendReport.builder()
                 .name(matcher.group(JOB_NAME))
                 .dateTime(buildLocalDateTime(matcher))
+                .programs(new ArrayList<>())
+                .baseLocators(new ArrayList<>())
                 .build();
-
     }
 
     private static LocalDateTime buildLocalDateTime(Matcher matcher) {

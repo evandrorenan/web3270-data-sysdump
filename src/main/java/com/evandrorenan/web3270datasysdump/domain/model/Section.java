@@ -1,11 +1,13 @@
 package com.evandrorenan.web3270datasysdump.domain.model;
 
 import lombok.Builder;
-
-import java.util.List;
+import lombok.Data;
 
 @Builder
-public record Section (
-    SectionType sectionType,
-    List<BaseLocator> baseLocators
-) {}
+@Data
+public class Section {
+    private SectionType sectionType;
+    private String sectionId;
+    private String initialAddress;
+    private String sectionLength;
+}
