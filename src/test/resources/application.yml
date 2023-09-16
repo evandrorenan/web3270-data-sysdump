@@ -6,3 +6,9 @@ spring:
       database: db
       username: xxx
       password: xxx
+
+blob-repository:
+  buffer-size: 1024
+  blob-storage:
+    connection-string: DefaultEndpointsProtocol=https\;AccountName=stweb3270\;AccountKey=xxx;EndpointSuffix=core
+    container-name: xxx

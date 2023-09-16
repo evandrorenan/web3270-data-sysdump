@@ -27,15 +27,15 @@ public class SaveBaseLocatorFromBlobUseCaseImpl implements SaveBaseLocatorFromBl
     @Override
     public void run(String blobId) throws Exception {
         log.info("Starting to save base locators from blobId: {}", blobId);
-        InputStream blobIS = blobRepository.getBlobInputStreamFromBlobId(blobId);
-        Optional<BlobChunckHolder> optBlobChunckHolder = blobRepository.nextChunk(blobIS);
+        InputStream blobIS = blobRepository.getBlobAsInputStreamById(blobId);
+//        Optional<BlobChunckHolder> optBlobChunckHolder = blobRepository.nextChunk(blobIS);
 
-        while (optBlobChunckHolder.isPresent()) {
-            BlobChunckHolder holder = optBlobChunckHolder.get();
-            log.info("Chunck size: {}", holder.chunckData().length());
-            log.info("Leftover data: {}", holder.leftOverData());
-            saveBaseLocatorUseCase.run(holder.chunckData());
-            optBlobChunckHolder = blobRepository.nextChunk(blobIS, holder.leftOverData());
-        }
+//        while (optBlobChunckHolder.isPresent()) {
+//            BlobChunckHolder holder = optBlobChunckHolder.get();
+//            log.info("Chunck size: {}", holder.chunckData().length());
+//            log.info("Leftover data: {}", holder.leftOverData());
+//            saveBaseLocatorUseCase.run(holder.chunckData());
+//            optBlobChunckHolder = blobRepository.nextChunk(blobIS, holder.leftOverData());
+//        }
     }
 }

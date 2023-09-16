@@ -34,44 +34,12 @@ public class BlobRepositoryImpl implements BlobRepository {
     }
 
     @Override
-    public InputStream getBlobInputStreamFromBlobId(String blobId) {
+    public InputStream getBlobAsInputStreamById(String blobId) {
         BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
                 .connectionString(this.connectionString)
                 .buildClient();
         BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(this.blobContainerName);
         BlobClient blobClient = blobContainerClient.getBlobClient(blobId);
         return blobClient.openInputStream();
-    }
-
-    @Override
-    public Optional<BlobChunckHolder> nextChunk(InputStream blobInputStream) {
-        return nextChunk(blobInputStream, "");
-    }
-
-    @Override
-    public Optional<BlobChunckHolder> nextChunk(InputStream blobInputStream, String leftOverData) {
-        try {
-            byte[] blobBytes = blobInputStream.readNBytes(bufferSize);
-            if (blobBytes.length == 0 && leftOverData.isEmpty()) return Optional.empty();
-
-            String chunk = leftOverData + new String(blobBytes, StandardCharsets.UTF_8);
-            int lastLineBreak = getLastLineBreak(chunk);
-
-            return Optional.of(BlobChunckHolder.builder()
-                                   .chunckData(chunk.substring(0, lastLineBreak))
-                                   .leftOverData(chunk.substring(lastLineBreak))
-                                   .build());
-
-        } catch (IOException e) {
-            log.error("Error trying to read blobInputStream: {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static int getLastLineBreak(String chunk) {
-        int lastLineBreak = chunk.lastIndexOf("\n");
-        if (lastLineBreak == 0) return chunk.length();
-
-        return lastLineBreak;
     }
 }

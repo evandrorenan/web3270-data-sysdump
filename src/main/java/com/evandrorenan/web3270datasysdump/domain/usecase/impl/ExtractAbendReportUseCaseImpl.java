@@ -1,42 +1,45 @@
 package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
+import com.evandrorenan.web3270datasysdump.domain.gateway.BlobGateway;
 import com.evandrorenan.web3270datasysdump.domain.model.AbendReport;
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ReportLineProcessor;
-import com.evandrorenan.web3270datasysdump.repository.BlobRepository;
-import com.evandrorenan.web3270datasysdump.repository.nosql.BlobInputStreamHolder;
+import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
 import java.util.List;
 
 @Component
 @Slf4j
-public class ExtractAbendReportUseCaseImpl {
+public class ExtractAbendReportUseCaseImpl  {
 
-    private final BlobRepository blobRepository;
+    private final BlobGateway blobGateway;
     private final List<ReportLineProcessor> processors;
 
     @Autowired
     public ExtractAbendReportUseCaseImpl(
-            BlobRepository blobRepository,
+            BlobGateway blobGateway,
             List<ReportLineProcessor> processors) {
-        this.blobRepository = blobRepository;
+        this.blobGateway = blobGateway;
         this.processors = processors;
     }
 
-    void run(String blobId, AbendReport abendReport) {
-        log.info("Starting to save base locators from blobId: {}", blobId);
-        InputStream blobIS = blobRepository.getBlobInputStreamFromBlobId(blobId);
-        BlobInputStreamHolder holder = new BlobInputStreamHolder(blobIS, blobRepository);
 
-        while (!holder.endReached()) {
-            String currentLine = holder.nextLine();
-            //Strategy Pattern - processors must be classified by priority
-            for (ReportLineProcessor processor : processors) {
-                abendReport = processor.process(currentLine, abendReport);
-            }
-        }
+    public AbendReport run(String blobId) {
+        log.info("Starting to save base locators from blobId: {}", blobId);
+
+
+        BlobInputStreamHolder holder = blobGateway.getBlobAsInputStreamById(blobId);
+
+        AbendReport abendReport;
+        abendReport = AbendReport.builder().build();
+        holder.forEachLine(s -> {
+            processors.forEach(p -> {
+                p.process(s, abendReport);
+            });
+        });
+
+        return abendReport;
     }
 }
