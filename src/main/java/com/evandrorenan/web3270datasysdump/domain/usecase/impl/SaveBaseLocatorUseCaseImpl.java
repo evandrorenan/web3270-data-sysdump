@@ -31,7 +31,7 @@ public class SaveBaseLocatorUseCaseImpl implements SaveBaseLocatorUseCase {
     }
 
     @Override
-    public List<BaseLocator> run(String rawInput) throws Exception {
+    public List<BaseLocator> run(String rawInput) {
         log.info("Starting to run SaveBaseLocatorUseCase");
         var baseLocators= this.extractUseCase.run(rawInput);
         return repo.saveAll(baseLocators.values());

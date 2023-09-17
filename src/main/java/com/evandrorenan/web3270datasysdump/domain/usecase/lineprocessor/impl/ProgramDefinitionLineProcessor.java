@@ -34,14 +34,14 @@ public class ProgramDefinitionLineProcessor implements ReportLineProcessor {
     }
 
     @Override
-    public AbendReport process(String line, AbendReport abendReport) {
+    public void process(String line, AbendReport abendReport) {
         Matcher matcher = PATTERN.matcher(line);
-        if (abendReport == null || !matcher.matches()) return abendReport;
+        if (abendReport == null || !matcher.find()) return;
 
         List<Program> programs = abendReport.getPrograms();
         if (programs.isEmpty()) {
             log.warn("Section declaration found before any program definition: {}", line);
-            return abendReport;
+            return;
         }
 
         lastProgramSections(programs).add(
@@ -51,8 +51,6 @@ public class ProgramDefinitionLineProcessor implements ReportLineProcessor {
                 .initialAddress(matcher.group(INITIAL_ADDRESS))
                 .sectionLength(matcher.group(SECTION_LENGTH))
                 .build());
-
-        return abendReport;
     }
 
     private static List<Section> lastProgramSections(List<Program> programs) {

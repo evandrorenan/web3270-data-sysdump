@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,20 +26,19 @@ public class ExtractAbendReportUseCaseImpl  {
         this.processors = processors;
     }
 
-
     public AbendReport run(String blobId) {
         log.info("Starting to save base locators from blobId: {}", blobId);
 
-
         BlobInputStreamHolder holder = blobGateway.getBlobAsInputStreamById(blobId);
 
-        AbendReport abendReport;
-        abendReport = AbendReport.builder().build();
-        holder.forEachLine(s -> {
-            processors.forEach(p -> {
-                p.process(s, abendReport);
-            });
-        });
+        var abendReport = AbendReport
+                .builder()
+                .programs(new ArrayList<>())
+                .baseLocators(new ArrayList<>())
+                .build();
+
+        holder.forEachLine(s ->
+            processors.forEach(p -> p.process(s, abendReport)));
 
         return abendReport;
     }

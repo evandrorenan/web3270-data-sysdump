@@ -8,5 +8,5 @@ public interface SaveBaseLocatorUseCase {
 
     List<BaseLocator> run(List<BaseLocator> baseLocator);
 
-    List<BaseLocator> run(String rawInput) throws Exception;
+    List<BaseLocator> run(String rawInput);
 }

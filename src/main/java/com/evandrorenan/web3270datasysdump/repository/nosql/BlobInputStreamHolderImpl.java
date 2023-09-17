@@ -1,9 +1,8 @@
 package com.evandrorenan.web3270datasysdump.repository.nosql;
 
-import com.evandrorenan.web3270datasysdump.domain.model.AbendReport;
+import com.evandrorenan.web3270datasysdump.domain.exception.Web3270RuntimeException;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
 import com.evandrorenan.web3270datasysdump.repository.util.BlobChunckHolder;
-import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,27 +15,36 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@Builder()
 @Slf4j
 public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
 
     public static final int LEN = 1920;
     public static final String INPUT_STREAM_CLOSE_FAILED = "Attempt to close blobInputStream failed. If this keeps happening application stability can be compromised. Exception throwed: {}";
-
     @NonNull
     InputStream blobInputStream;
-    private Boolean inputStreamEnded = false;
-    private List<String> bufferedLines= new ArrayList<>();
-    private Integer bufferIndex = 0;
-    private String leftOverData = "";
+    @NonNull
+    private Boolean inputStreamEnded;
+    @NonNull
+    private List<String> bufferedLines;
+    @NonNull
+    private Integer bufferIndex;
+    @NonNull
+    private final String leftOverData;
 
-    private BlobInputStreamHolderImpl() {}
+    public BlobInputStreamHolderImpl(InputStream blobInputStream) {
+        this.blobInputStream = blobInputStream;
+        this.inputStreamEnded = false;
+        this.bufferedLines = new ArrayList<>();
+        this.bufferIndex = 0;
+        this.leftOverData = "";
+    }
 
     @Override
     public void forEachLine(Consumer<String> action) {
         Optional<String> optCurrentLine = this.getNextLine();
         while (optCurrentLine.isPresent()) {
             action.accept(optCurrentLine.get());
+            optCurrentLine = this.getNextLine();
         }
     }
 
@@ -47,8 +55,12 @@ public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
         }
         bufferIndex++;
 
-        if (this.inputStreamEnded) return Optional.empty();
+        if (inputStreamEnded()) return Optional.empty();
         return Optional.of(this.bufferedLines.get(bufferIndex - 1));
+    }
+
+    private boolean inputStreamEnded() {
+        return this.inputStreamEnded;
     }
 
     private void getNextChunck() {
@@ -84,12 +96,12 @@ public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
 
         } catch (IOException e) {
             log.error("Error trying to read blobInputStream: {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new Web3270RuntimeException(e);
         }
     }
 
     private Optional<BlobChunckHolder> buildNextChunck(byte[] blobBytes) {
-        String chunk = leftOverData + new String(blobBytes, StandardCharsets.UTF_8);
+        String chunk = this.leftOverData + new String(blobBytes, StandardCharsets.UTF_8);
         int lastLineBreak = getLastLineBreak(chunk);
 
         return Optional.of(BlobChunckHolder.builder()
@@ -99,7 +111,7 @@ public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
     }
 
     private boolean inputStreamEnded(byte[] blobBytes) {
-        return blobBytes.length == 0 && leftOverData.isEmpty();
+        return blobBytes.length == 0 && this.leftOverData.isEmpty();
     }
 
     private static int getLastLineBreak(String chunk) {

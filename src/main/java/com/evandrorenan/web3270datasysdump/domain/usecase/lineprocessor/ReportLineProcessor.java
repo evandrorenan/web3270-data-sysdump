@@ -8,5 +8,5 @@ public interface ReportLineProcessor {
 
     BigDecimal priority();
 
-    AbendReport process(String line, AbendReport abendReport);
+    void process(String line, AbendReport abendReport);
 }

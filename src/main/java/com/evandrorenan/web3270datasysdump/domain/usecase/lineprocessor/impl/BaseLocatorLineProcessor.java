@@ -25,9 +25,9 @@ public class BaseLocatorLineProcessor implements ReportLineProcessor {
     }
 
     @Override
-    public AbendReport process(String line, AbendReport abendReport) {
+    public void process(String line, AbendReport abendReport) {
         Matcher matcher = PATTERN.matcher(line);
-        if (abendReport == null || !matcher.matches()) return abendReport;
+        if (abendReport == null || !matcher.find()) return;
 
         abendReport.getBaseLocators().add(
             BaseLocator.builder()
@@ -35,7 +35,5 @@ public class BaseLocatorLineProcessor implements ReportLineProcessor {
                 .hexContent(matcher.group(BASE_LOCATOR))
                 .build()
         );
-
-        return abendReport;
     }
 }

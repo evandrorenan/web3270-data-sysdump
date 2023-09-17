@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,10 +18,11 @@ public class AbendReportHeaderLineProcessor implements ReportLineProcessor {
     private static final String DATE = "date";
     private static final String TIME = "time";
     private static final Pattern PATTERN = Pattern.compile(
-            "JOBNAME:\\s*?(?<" + JOB_NAME + ">[A-Za-z0-9$@#]{1,8}).*?" +
-                  "ABEND:\\s*?(?<" + ABEND_CODE + ">[A-Za-z0-9$@#]{1,8}).*?" +
-                  "(?<" + DATE + ">\\d{4}/\\d{2}/\\d{2})\\s*?" +
-                  "(?<" + TIME + ">\\d{2}:\\d{2}:\\d{2})");
+    "^JOBNAME:\\s*?(?<" +
+            JOB_NAME + ">[a-zA-Z0-9#$]{1,8})\\s*?.*?ABEND:\\s*?(?<" +
+            ABEND_CODE + ">[a-zA-Z0-9#$]{1,8}).*?(?<" +
+            DATE +">\\d{4}\\/\\d{2}\\/\\d{2})\\s*?(?<" +
+            TIME + ">\\d{2}:\\d{2}:\\d{2})\\s*?");
 
     @Override
     public BigDecimal priority() {
@@ -30,16 +30,13 @@ public class AbendReportHeaderLineProcessor implements ReportLineProcessor {
     }
 
     @Override
-    public AbendReport process(String line, AbendReport abendReport) {
+    public void process(String line, AbendReport abendReport) {
         Matcher matcher = PATTERN.matcher(line);
-        if (abendReport == null || !matcher.matches()) return abendReport;
+        if (abendReport == null || !matcher.find()) return;
 
-        return AbendReport.builder()
-                .name(matcher.group(JOB_NAME))
-                .dateTime(buildLocalDateTime(matcher))
-                .programs(new ArrayList<>())
-                .baseLocators(new ArrayList<>())
-                .build();
+        abendReport.setName(matcher.group(JOB_NAME));
+        abendReport.setJobId(matcher.group(ABEND_CODE));
+        abendReport.setDateTime(buildLocalDateTime(matcher));
     }
 
     private static LocalDateTime buildLocalDateTime(Matcher matcher) {

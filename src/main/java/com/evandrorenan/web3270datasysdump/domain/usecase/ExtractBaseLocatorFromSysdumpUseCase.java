@@ -6,5 +6,5 @@ import java.util.TreeMap;
 
 public interface ExtractBaseLocatorFromSysdumpUseCase {
 
-    TreeMap<String, BaseLocator> run(String rawInputArray) throws Exception;
+    TreeMap<String, BaseLocator> run(String rawInputArray);
 }

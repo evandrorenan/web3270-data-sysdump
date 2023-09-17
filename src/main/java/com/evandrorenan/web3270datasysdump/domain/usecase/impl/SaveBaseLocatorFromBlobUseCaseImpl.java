@@ -25,7 +25,7 @@ public class SaveBaseLocatorFromBlobUseCaseImpl implements SaveBaseLocatorFromBl
     }
 
     @Override
-    public void run(String blobId) throws Exception {
+    public void run(String blobId) {
         log.info("Starting to save base locators from blobId: {}", blobId);
         InputStream blobIS = blobRepository.getBlobAsInputStreamById(blobId);
 //        Optional<BlobChunckHolder> optBlobChunckHolder = blobRepository.nextChunk(blobIS);

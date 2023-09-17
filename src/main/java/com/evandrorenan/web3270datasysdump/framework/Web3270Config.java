@@ -8,7 +8,6 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 public class Web3270Config {
@@ -25,6 +24,6 @@ public class Web3270Config {
         return context.getBeanFactory().getBeansOfType(ReportLineProcessor.class)
                 .values()
                 .stream().sorted(Comparator.comparing(ReportLineProcessor::priority))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

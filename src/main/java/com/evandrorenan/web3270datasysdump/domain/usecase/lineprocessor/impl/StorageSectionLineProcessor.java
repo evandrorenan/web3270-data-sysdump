@@ -15,7 +15,7 @@ public class StorageSectionLineProcessor implements ReportLineProcessor {
 
     private static final String PROGRAM_NAME = "programname";
     private static final Pattern PATTERN = Pattern.compile(
-            "Program\\sand\\sEntry\\sPoint\\sName:\\s*?(?<" + PROGRAM_NAME + ">\\S{1,8})");
+            "Program\\sand\\sEntry\\sPoint\\sName:\\s*?(?<" + PROGRAM_NAME + ">\\S[a-zA-Z0-9#$]{1,8})");
 
     @Override
     public BigDecimal priority() {
@@ -23,16 +23,14 @@ public class StorageSectionLineProcessor implements ReportLineProcessor {
     }
 
     @Override
-    public AbendReport process(String line, AbendReport abendReport) {
+    public void process(String line, AbendReport abendReport) {
         Matcher matcher = PATTERN.matcher(line);
-        if (abendReport == null || !matcher.matches()) return abendReport;
+        if (abendReport == null || !matcher.find()) return;
 
         abendReport.getPrograms().add(
-                Program.builder()
-                        .name(matcher.group(PROGRAM_NAME))
-                        .sections(new ArrayList<>())
-                        .build());
-
-        return abendReport;
+            Program.builder()
+                   .name(matcher.group(PROGRAM_NAME))
+                   .sections(new ArrayList<>())
+                   .build());
     }
 }
