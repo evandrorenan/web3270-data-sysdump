@@ -2,6 +2,7 @@ package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.gateway.BlobGateway;
 import com.evandrorenan.web3270datasysdump.domain.model.AbendReport;
+import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ExtractAbendReportUseCase;
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ReportLineProcessor;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class ExtractAbendReportUseCaseImpl  {
+public class ExtractAbendReportUseCaseImpl implements ExtractAbendReportUseCase {
 
     private final BlobGateway blobGateway;
     private final List<ReportLineProcessor> processors;
@@ -26,6 +27,7 @@ public class ExtractAbendReportUseCaseImpl  {
         this.processors = processors;
     }
 
+    @Override
     public AbendReport run(String blobId) {
         log.info("Starting to save base locators from blobId: {}", blobId);
 
