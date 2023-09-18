@@ -30,6 +30,7 @@ public class SaveBaseLocatorFromBlobUseCaseImpl implements SaveBaseLocatorFromBl
     public AbendReport run(String blobId) {
         log.info("Starting to save base locators from blobId: {}", blobId);
         AbendReport abendReport = extractAbendReportUseCase.run(blobId);
-        saveBaseLocatorUseCase.run(AbendReport);
+//        saveBaseLocatorUseCase.run(AbendReport);
+        return null;
     }
 }

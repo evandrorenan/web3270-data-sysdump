@@ -1,4 +1,4 @@
-package com.evandrorenan.web3270datasysdump.repository.nosql;
+package com.evandrorenan.web3270datasysdump.repository.azure;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;

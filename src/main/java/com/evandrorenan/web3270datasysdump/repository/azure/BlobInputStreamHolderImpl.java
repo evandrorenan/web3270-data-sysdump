@@ -1,4 +1,4 @@
-package com.evandrorenan.web3270datasysdump.repository.nosql;
+package com.evandrorenan.web3270datasysdump.repository.azure;
 
 import com.evandrorenan.web3270datasysdump.domain.exception.Web3270RuntimeException;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -40,7 +41,7 @@ public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
     }
 
     @Override
-    public void forEachLine(Consumer<String> action) {
+    public void forEachLine(Consumer<String> action, BiConsumer<String, String> callback) {
         Optional<String> optCurrentLine = this.getNextLine();
         while (optCurrentLine.isPresent()) {
             action.accept(optCurrentLine.get());

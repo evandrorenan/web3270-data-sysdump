@@ -3,7 +3,7 @@ package com.evandrorenan.web3270datasysdump.infrastructure;
 import com.evandrorenan.web3270datasysdump.domain.gateway.BlobGateway;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
 import com.evandrorenan.web3270datasysdump.repository.BlobRepository;
-import com.evandrorenan.web3270datasysdump.repository.nosql.BlobInputStreamHolderImpl;
+import com.evandrorenan.web3270datasysdump.repository.azure.BlobInputStreamHolderImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

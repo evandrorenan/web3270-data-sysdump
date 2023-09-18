@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,19 @@ public class AbendReportHeaderLineProcessor implements ReportLineProcessor {
     @Override
     public BigDecimal priority() {
         return BigDecimal.valueOf(1);
+    }
+
+  //  @Override
+    public Map<String, String> process(String line) {
+        Matcher matcher = PATTERN.matcher(line);
+
+        Map<String, String> map = new HashMap<>();
+        while (matcher.find()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                //map.put(PATTERN.)
+            }
+        }
+        return null;
     }
 
     @Override

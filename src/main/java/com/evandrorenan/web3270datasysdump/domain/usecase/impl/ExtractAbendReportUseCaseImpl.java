@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @Component
 @Slf4j
@@ -39,9 +42,13 @@ public class ExtractAbendReportUseCaseImpl implements ExtractAbendReportUseCase 
                 .baseLocators(new ArrayList<>())
                 .build();
 
-        holder.forEachLine(s ->
-            processors.forEach(p -> p.process(s, abendReport)));
-
+        Map<String, String> extractedData = new HashMap<>();
+/*
+        holder.forEachLine(
+            line -> processors.forEach(p -> p.process(line, abendReport)),
+            (ruleId, resultString) -> extractedData.put(ruleId, resultString));
+*/
+        extractedData.values().forEach(System.out::println);
         return abendReport;
     }
 }

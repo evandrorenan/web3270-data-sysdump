@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface SaveBaseLocatorUseCase {
 
-    List<BaseLocator> run(AbendReport abendReport);
+    AbendReport run(AbendReport abendReport);
 
-    @Deprecated
+    @Deprecated(forRemoval = true, since = "17/09/23")
     List<BaseLocator> run(List<BaseLocator> baseLocator);
 
-    @Deprecated
+    @Deprecated(forRemoval = true, since = "17/09/23")
     List<BaseLocator> run(String rawInput);
 }

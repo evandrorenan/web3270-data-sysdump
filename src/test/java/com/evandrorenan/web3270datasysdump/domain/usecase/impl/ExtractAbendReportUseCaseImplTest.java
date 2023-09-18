@@ -8,7 +8,7 @@ import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.impl.Bas
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.impl.ProgramDefinitionLineProcessor;
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.impl.StorageSectionLineProcessor;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
-import com.evandrorenan.web3270datasysdump.repository.nosql.BlobInputStreamHolderImpl;
+import com.evandrorenan.web3270datasysdump.repository.azure.BlobInputStreamHolderImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
