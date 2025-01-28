@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web3270-data-sysdump:
+    image: your_docker_image_name  # Replace with your actual Docker image name
+    build:
+      context: .
+      dockerfile: Dockerfile  # Ensure you have a Dockerfile in your project root
+    ports:
+      - "8080:8080"  # Map the application port
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://web3270db:27017/web3270db  # Use the new database name
+      SPRING_APPLICATION_NAME: web3270-data-sysdump
+      # Add other environment variables as needed
+    depends_on:
+      - web3270db
+
+  web3270db:
+    image: mongo:latest  # Use the latest MongoDB image
+    container_name: web3270db  # Rename the container to web3270db
+    ports:
+      - "27017:27017"  # Expose MongoDB port
+    volumes:
+      - mongo_data:/data/db  # Persist data
+    command: ["mongod", "--bind_ip_all", "--replSet", "rs0"]  # Start MongoDB with replica set
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root  # Optional: Set a root username
+      MONGO_INITDB_ROOT_PASSWORD: example  # Optional: Set a root password
+      MONGO_INITDB_DATABASE: web3270db  # Create the database
+
+volumes:
+  mongo_data:
