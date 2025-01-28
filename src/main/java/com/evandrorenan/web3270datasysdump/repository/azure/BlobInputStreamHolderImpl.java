@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
 
     public static final int LEN = 1920;
-    public static final String INPUT_STREAM_CLOSE_FAILED = "Attempt to close blobInputStream failed. If this keeps happening application stability can be compromised. Exception throwed: {}";
+    public static final String INPUT_STREAM_CLOSE_FAILED = "Attempt to close blobInputStream failed. If this keeps happening application stability can be compromised. Exception thrown: {}";
     @NonNull
     InputStream blobInputStream;
     @NonNull
@@ -96,8 +96,7 @@ public class BlobInputStreamHolderImpl implements BlobInputStreamHolder {
             return buildNextChunck(blobBytes);
 
         } catch (IOException e) {
-            log.error("Error trying to read blobInputStream: {}", e.getMessage());
-            throw new Web3270RuntimeException(e);
+            throw new Web3270RuntimeException("Error trying to read blobInputStream: " + e.getMessage());
         }
     }
 

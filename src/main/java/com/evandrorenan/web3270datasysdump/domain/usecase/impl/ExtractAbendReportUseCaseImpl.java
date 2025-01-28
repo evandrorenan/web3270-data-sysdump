@@ -2,6 +2,7 @@ package com.evandrorenan.web3270datasysdump.domain.usecase.impl;
 
 import com.evandrorenan.web3270datasysdump.domain.gateway.BlobGateway;
 import com.evandrorenan.web3270datasysdump.domain.model.AbendReport;
+import com.evandrorenan.web3270datasysdump.domain.model.Program;
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ExtractAbendReportUseCase;
 import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ReportLineProcessor;
 import com.evandrorenan.web3270datasysdump.infrastructure.adapters.BlobInputStreamHolder;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 @Component
 @Slf4j
@@ -38,17 +38,17 @@ public class ExtractAbendReportUseCaseImpl implements ExtractAbendReportUseCase 
 
         var abendReport = AbendReport
                 .builder()
-                .programs(new ArrayList<>())
+                .program(Program.builder().build())
                 .baseLocators(new ArrayList<>())
                 .build();
 
         Map<String, String> extractedData = new HashMap<>();
-/*
+
         holder.forEachLine(
             line -> processors.forEach(p -> p.process(line, abendReport)),
-            (ruleId, resultString) -> extractedData.put(ruleId, resultString));
-*/
-        extractedData.values().forEach(System.out::println);
+                extractedData::put);
+
+        extractedData.values().forEach(log::info);
         return abendReport;
     }
 }

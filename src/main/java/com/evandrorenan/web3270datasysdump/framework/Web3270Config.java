@@ -9,6 +9,13 @@ import org.springframework.context.support.GenericApplicationContext;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Configuration class for Web3270 Data Sysdump application components.
+ * This class provides configuration for application-specific components.
+ *
+ * @author Evandro Renan
+ * @version 0.0.1-SNAPSHOT
+ */
 @Configuration
 public class Web3270Config {
 
@@ -19,6 +26,12 @@ public class Web3270Config {
         this.context = context;
     }
 
+    /**
+     * Creates and configures the list of ReportLineProcessor beans.
+     * This list is used for processing report lines.
+     *
+     * @return list of ReportLineProcessor beans
+     */
     @Bean
     public List<ReportLineProcessor> buildLineProcessorsBeans() {
         return context.getBeanFactory().getBeansOfType(ReportLineProcessor.class)
