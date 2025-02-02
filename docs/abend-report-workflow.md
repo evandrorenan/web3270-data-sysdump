@@ -4,6 +4,7 @@
 
 ```mermaid
 classDiagram
+    %% Core Domain Objects
     class AbendReportRequest {
         +String jobId
         +String programName
@@ -33,12 +34,23 @@ classDiagram
         ERROR
     }
 
-    %% Event System
-    class AbendReportEvent {
+    %% Observer Pattern
+    class EventPublisher {
+        -List<EventObserver> observers
+        +registerObserver(EventObserver observer)
+        +removeObserver(EventObserver observer)
+        +notifyObservers(AbendReportEvent event)
+    }
+
+    class EventObserver {
         <<interface>>
-        +getPayload()
-        +getEventType()
-        +getRequestId()
+        +onEvent(AbendReportEvent event)
+    }
+
+    class AbendReportEvent {
+        +String requestId
+        +EventType type
+        +Object payload
     }
 
     class EventType {
@@ -46,177 +58,119 @@ classDiagram
         REQUEST_INITIALIZED
         DATA_COLLECTION_STARTED
         DATA_COLLECTION_COMPLETED
-        BLOB_SAVED
         REPORT_EXTRACTION_STARTED
         REPORT_EXTRACTION_COMPLETED
         BASE_LOCATORS_SAVED
     }
 
-    %% Status Management
-    class StatusManager {
-        <<interface>>
-        +onEvent(AbendReportEvent event)
-        -updateStatus(String requestId, RequestStatus status)
-    }
-
-    class StatusManagerImpl {
-        -Map<EventType, RequestStatus> statusMappings
-        +onEvent(AbendReportEvent event)
-        -updateStatus(String requestId, RequestStatus status)
-    }
-
-    %% Chain of Responsibility Interfaces
+    %% Chain of Responsibility
     class AbendReportHandler {
         <<interface>>
         +handle(AbendReportEvent event)
         +setNext(AbendReportHandler next)
     }
 
-    %% Concrete Handlers
     class RequestInitializationHandler {
+        -EventPublisher publisher
         +handle(AbendReportEvent event)
-        -generateRequestProtocol()
     }
 
     class DataCollectionHandler {
+        -EventPublisher publisher
+        -InMemoryStorage storage
         +handle(AbendReportEvent event)
-        -collectRawData()
-    }
-
-    class BlobStorageHandler {
-        +handle(AbendReportEvent event)
-        -saveBlob()
     }
 
     class ReportExtractionHandler {
+        -EventPublisher publisher
+        -InMemoryStorage storage
         +handle(AbendReportEvent event)
-        -extractReport()
     }
 
     class BaseLocatorHandler {
+        -EventPublisher publisher
+        -InMemoryStorage storage
         +handle(AbendReportEvent event)
-        -saveBaseLocators()
     }
 
+    %% In-Memory Storage
+    class InMemoryStorage {
+        -Map<String, Object> store
+        +save(String key, Object value)
+        +get(String key)
+        +remove(String key)
+    }
+
+    %% Status Management
+    class StatusManager {
+        -InMemoryStorage storage
+        +onEvent(AbendReportEvent event)
+    }
+
+    %% Relationships
     AbendReportHandler <|.. RequestInitializationHandler
     AbendReportHandler <|.. DataCollectionHandler
-    AbendReportHandler <|.. BlobStorageHandler
     AbendReportHandler <|.. ReportExtractionHandler
     AbendReportHandler <|.. BaseLocatorHandler
     
-    AbendReportRequest --> RequestStatus
-    BaseLocatorHandler --> AbendReport
+    EventObserver <|.. StatusManager
+    EventPublisher --> EventObserver
     AbendReportEvent --> EventType
-    StatusManager <|.. StatusManagerImpl
-    StatusManagerImpl --> RequestStatus
-    StatusManagerImpl ..> AbendReportEvent : observes
+    
+    RequestInitializationHandler --> EventPublisher
+    DataCollectionHandler --> EventPublisher
+    ReportExtractionHandler --> EventPublisher
+    BaseLocatorHandler --> EventPublisher
+    
+    DataCollectionHandler --> InMemoryStorage
+    ReportExtractionHandler --> InMemoryStorage
+    BaseLocatorHandler --> InMemoryStorage
+    StatusManager --> InMemoryStorage
 ```
 
 ### Class/Interface Descriptions
 
-1. **AbendReportHandler (Interface)**
-   - Core interface for the Chain of Responsibility pattern
-   - Focuses solely on processing logic
-   - No status management responsibility
+1. **EventPublisher**
+   - Central event management
+   - Maintains list of observers
+   - Notifies observers of workflow events
 
-2. **AbendReportEvent (Interface)**
-   - Represents events flowing through the system
-   - Carries payload and event type information
-   - Includes request ID for tracking
+2. **EventObserver**
+   - Interface for components that need to react to events
+   - Implemented by StatusManager and other observers
 
-3. **EventType (Enumeration)**
-   - Defines all possible events in the workflow
-   - Allows for easy addition of new event types
-   - Used by StatusManager for status mapping
+3. **InMemoryStorage**
+   - Simple key-value store for workflow data
+   - Maintains state during request processing
+   - Used by handlers to store/retrieve data
 
-4. **StatusManager (Interface)**
-   - Responsible for status management
-   - Observes events and updates status accordingly
-   - Decoupled from handlers
+4. **AbendReportHandler**
+   - Chain of Responsibility interface
+   - Each handler processes its part and publishes events
+   - Uses InMemoryStorage for data persistence
 
-5. **StatusManagerImpl**
-   - Implements status management logic
-   - Maintains mappings between events and statuses
-   - Single source of truth for status updates
+5. **StatusManager**
+   - Observes workflow events
+   - Updates request status in storage
+   - Single source of truth for status
 
-6. **RequestInitializationHandler**
-   - Handles initial request creation
-   - Generates unique request protocol
-   - Emits REQUEST_INITIALIZED event
+6. **Handlers**
+   - RequestInitializationHandler: Creates new requests
+   - DataCollectionHandler: Collects raw data
+   - ReportExtractionHandler: Processes data into report
+   - BaseLocatorHandler: Saves base locators
 
-7. **DataCollectionHandler**
-   - Responsible for collecting raw data
-   - Emits events for collection start/completion
-   - Produces Blob containing raw data
+### Workflow
 
-8. **BlobStorageHandler**
-   - Manages blob storage operations
-   - Emits BLOB_SAVED event
-   - Returns blob ID
+1. Request comes in → RequestInitializationHandler
+2. Events flow through handlers via Chain of Responsibility
+3. StatusManager observes events and updates status
+4. Data passed between handlers using InMemoryStorage
+5. Each step publishes events on completion
 
-9. **ReportExtractionHandler**
-   - Processes blob data to extract AbendReport
-   - Emits extraction start/completion events
-   - Creates structured AbendReport object
-
-10. **BaseLocatorHandler**
-    - Final handler in the chain
-    - Saves base locators from AbendReport
-    - Emits BASE_LOCATORS_SAVED event
-
-## Microservices Architecture
-
-```mermaid
-graph TB
-    subgraph "Abend Report Service"
-        A[Request Handler]
-        B[Report Processor]
-        C[Event Bus]
-    end
-
-    subgraph "Data Collection Service"
-        D[Data Collector]
-        E[Raw Data Storage]
-    end
-
-    subgraph "Report Storage Service"
-        F[Blob Storage]
-        G[Report Repository]
-    end
-
-    A --1.Initialize Request--> C
-    C --2.Collect Data--> D
-    D --3.Store Raw Data--> E
-    E --4.Raw Data Stored--> C
-    C --5.Process Report--> B
-    B --6.Store Report--> F
-    F --7.Store Metadata--> G
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bfb,stroke:#333,stroke-width:2px
-```
-
-### Microservices Description
-
-1. **Abend Report Service**
-   - Handles request initialization
-   - Orchestrates the overall process
-   - Manages report extraction and processing
-
-2. **Data Collection Service**
-   - Specialized in raw data collection
-   - Handles data storage and retrieval
-   - Isolated from report processing concerns
-
-3. **Report Storage Service**
-   - Manages blob storage
-   - Handles report persistence
-   - Stores base locators and metadata
-
-The microservices architecture provides:
-- Better scalability
-- Independent deployment
-- Specialized concerns
-- Fault isolation
-- Enhanced maintainability
+This simplified design:
+- Runs entirely in one service
+- Uses Observer pattern for event handling
+- Stores all data in memory
+- Maintains loose coupling through events
+- Keeps single responsibility principle

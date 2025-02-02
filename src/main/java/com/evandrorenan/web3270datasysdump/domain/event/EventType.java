@@ -1,0 +1,10 @@
+package com.evandrorenan.web3270datasysdump.domain.event;
+
+public enum EventType {
+    REQUEST_INITIALIZED,
+    DATA_COLLECTION_STARTED,
+    DATA_COLLECTION_COMPLETED,
+    REPORT_EXTRACTION_STARTED,
+    REPORT_EXTRACTION_COMPLETED,
+    BASE_LOCATORS_SAVED
+}
