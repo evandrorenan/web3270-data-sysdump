@@ -42,7 +42,7 @@ public class SaveBaseLocatorUseCaseImpl implements SaveBaseLocatorUseCase {
     public List<BaseLocator> run(String rawInput) {
         log.info("Starting to run SaveBaseLocatorUseCase");
         var baseLocators= this.extractUseCase.run(rawInput);
-//        return repo.saveAll(baseLocators.values());
+        return repo.saveAll(baseLocators.values());
         return null;
     }
 }
