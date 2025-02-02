@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,13 +39,13 @@ public class ProgramDefinitionLineProcessor implements ReportLineProcessor {
         Matcher matcher = PATTERN.matcher(line);
         if (abendReport == null || !matcher.find()) return;
 
-        List<Program> programs = abendReport.getPrograms();
-        if (programs.isEmpty()) {
-            log.warn("Section declaration found before any program definition: {}", line);
+        Program program = abendReport.getProgram();
+        if (program == null) {
+            log.warn("Section declaration found before program definition: {}", line);
             return;
         }
 
-        lastProgramSections(programs).add(
+        lastProgramSections(program).add(
             Section.builder()
                 .sectionType(SectionType.getEnumFromLetter(matcher.group(SECTION_TYPE)))
                 .sectionId(matcher.group(SECTION_ID))
@@ -53,7 +54,8 @@ public class ProgramDefinitionLineProcessor implements ReportLineProcessor {
                 .build());
     }
 
-    private static List<Section> lastProgramSections(List<Program> programs) {
-        return programs.get(programs.size() - 1).getSections();
+    private static List<Section> lastProgramSections(Program program) {
+        log.info(program.toString());
+        return new ArrayList<>();
     }
 }

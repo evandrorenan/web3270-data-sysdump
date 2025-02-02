@@ -5,10 +5,27 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * Enumeration of different section types found in a 3270 terminal system dump.
+ * Each type represents a specific category of information that can be found
+ * in the system dump.
+ *
+ * @author Evandro Renan
+ * @version 0.0.1-SNAPSHOT
+ */
 @Slf4j
 public enum SectionType {
+    /**
+     * Working storage section.
+     */
     WORKING_STORAGE("W"),
+    /**
+     * Linkage section.
+     */
     LINKAGE("L"),
+    /**
+     * File section.
+     */
     FILE("F");
 
     private final String sectionLetter;

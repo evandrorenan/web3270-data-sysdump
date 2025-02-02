@@ -6,7 +6,6 @@ import com.evandrorenan.web3270datasysdump.domain.usecase.lineprocessor.ReportLi
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,10 +26,9 @@ public class StorageSectionLineProcessor implements ReportLineProcessor {
         Matcher matcher = PATTERN.matcher(line);
         if (abendReport == null || !matcher.find()) return;
 
-        abendReport.getPrograms().add(
+        abendReport.setProgram(
             Program.builder()
                    .name(matcher.group(PROGRAM_NAME))
-                   .sections(new ArrayList<>())
                    .build());
     }
 }

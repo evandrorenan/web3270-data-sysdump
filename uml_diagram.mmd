@@ -1,0 +1,37 @@
+```mermaid
+classDiagram
+    class AbendReport {
+        +String id
+        +List<BaseLocator> baseLocators
+        +Program program
+    }
+
+    class BaseLocator {
+        +ObjectId _id
+        +String location
+    }
+
+    class Program {
+        +String name
+    }
+
+    class SaveBaseLocatorUseCase {
+        +AbendReport run(AbendReport abendReport)
+        +List<BaseLocator> run(List<BaseLocator> baseLocator)
+        +List<BaseLocator> run(String rawInput)
+    }
+
+    class SaveBaseLocatorFromBlobUseCase {
+        +AbendReport run(String blobId)
+    }
+
+    class ExtractBaseLocatorFromSysdumpUseCase {
+        +TreeMap<String, BaseLocator> run(String rawInputArray)
+    }
+
+    AbendReport --> BaseLocator : contains
+    AbendReport --> Program : contains
+    SaveBaseLocatorUseCase <|-- AbendReport : uses
+    SaveBaseLocatorFromBlobUseCase <|-- AbendReport : uses
+    ExtractBaseLocatorFromSysdumpUseCase <|-- BaseLocator : uses
+```
